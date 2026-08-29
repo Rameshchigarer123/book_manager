@@ -4,6 +4,7 @@ import Book from '@/lib/models/Book';
 import jwt from 'jsonwebtoken';
 
 const SECRET_KEY = process.env.JWT_SECRET;
+
 export async function GET(request, { params }) {
   try {
     const token = request.cookies.get('token')?.value;
@@ -15,10 +16,11 @@ export async function GET(request, { params }) {
       );
     }
 
+    const { id } = await params;
     const decoded = jwt.verify(token, SECRET_KEY);
     await connectDB();
     const book = await Book.findOne({ 
-      _id: params.id, 
+      _id: id, 
       userId: decoded.userID 
     });
     
@@ -49,11 +51,12 @@ export async function PUT(request, { params }) {
       );
     }
 
+    const { id } = await params;
     const decoded = jwt.verify(token, SECRET_KEY);
     await connectDB();
     const { title, author, tags, status } = await request.json();
     const book = await Book.findOneAndUpdate(
-      { _id: params.id, userId: decoded.userID },
+      { _id: id, userId: decoded.userID },
       { title, author, tags, status, updatedAt: new Date() },
       { new: true }
     );
@@ -84,11 +87,12 @@ export async function DELETE(request, { params }) {
       );
     }
 
+    const { id } = await params;
     const decoded = jwt.verify(token, SECRET_KEY);
     await connectDB();
     const book = await Book.findOneAndDelete({ 
-      _id: params.id, 
-      userId: decoded.userID
+      _id: id, 
+      userId: decoded.userID 
     });
     
     if (!book) {
@@ -108,3 +112,5 @@ export async function DELETE(request, { params }) {
     );
   }
 }
+
+
