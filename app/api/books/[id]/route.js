@@ -19,7 +19,7 @@ export async function GET(request, { params }) {
     await connectDB();
     const book = await Book.findOne({ 
       _id: params.id, 
-      userId: decoded.userId 
+      userId: decoded.userID 
     });
     
     if (!book) {
@@ -53,7 +53,7 @@ export async function PUT(request, { params }) {
     await connectDB();
     const { title, author, tags, status } = await request.json();
     const book = await Book.findOneAndUpdate(
-      { _id: params.id, userId: decoded.userId },
+      { _id: params.id, userId: decoded.userID },
       { title, author, tags, status, updatedAt: new Date() },
       { new: true }
     );
@@ -88,7 +88,7 @@ export async function DELETE(request, { params }) {
     await connectDB();
     const book = await Book.findOneAndDelete({ 
       _id: params.id, 
-      userId: decoded.userId 
+      userId: decoded.userID
     });
     
     if (!book) {
